@@ -1,0 +1,56 @@
+{
+	"binary_file_patterns":
+	[
+		"dist/*",
+		"node_modules/*",
+		"*.jpg",
+		"*.jpeg",
+		"*.png",
+		"*.gif",
+		"*.ttf",
+		"*.tga",
+		"*.dds",
+		"*.ico",
+		"*.eot",
+		"*.pdf",
+		"*.swf",
+		"*.jar",
+		"*.zip",
+		"coverage/*",
+		"e2e/*",
+		"doc/*",
+		".idea/*",
+		"bundles/*",
+		"assets/*"
+	],
+	"bold_folder_labels": true,
+	"caret_extra_bottom": 1,
+	"caret_extra_top": 1,
+	"caret_extra_width": 1,
+	"caret_style": "blink",
+	"color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+	"fade_fold_buttons": false,
+	"font_face": "Hack",
+	"font_size": 16,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"indent_guide_options":
+	[
+		"draw_normal",
+		"draw_active"
+	],
+	"javascript_linter": "eslint",
+	"line_padding_bottom": 2,
+	"line_padding_top": 2,
+	"overlay_scroll_bars": "enabled",
+	"show_encoding": true,
+	"show_line_endings": true,
+	"sublimelinter": true,
+	"tab_size": 2,
+	"theme": "Boxy Monokai.sublime-theme",
+	"theme_accent_green": true,
+	"theme_icons_materialized": true,
+	"translate_tabs_to_spaces": true
+}
