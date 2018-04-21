@@ -1,0 +1,6 @@
+rofi.hide-scrollbar: true
+rofi.width: 25
+rofi.lines: 10
+rofi.opacity: 0.5
+rofi.font: hack 16
+rofi.theme: /usr/share/rofi/themes/Adapta-Nokto.rasi
