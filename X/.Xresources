@@ -1,79 +1,81 @@
-Xft.dpi: 150
-Xft.antialias: true
-Xft.hinting: true
-Xft.rgba: none
-Xft.autohint: false
+Xft.dpi:       	150
+Xft.antialias:  true
+Xft.rgba:       rgb
+Xft.hinting:    true
 Xft.hintstyle: hintfull
-Xft.lcdfilter: lcddefault
 
-XTerm*background: #2b2b2b
-XTerm*foreground: #e7e7e7
-XTerm*pointerColor: #16A085
-XTerm*faceName: Fixed
-XTerm*faceSize: 22
-
-*background:                      #272827
-*foreground:                      #657b83
-*fading:                          15
-*fadeColor:                       black
-*cursorColor:                     #16A085
-*pointerColorBackground:          #2B2C2B
-*pointerColorForeground:          #16A085
-
-!! black dark/light
-*color0:                          #232423
-*color8:                          #282928
-
-!! red dark/light
-*color1:                          #BA2922
-*color9:                          #CC372C
-
-!! green dark/light
-*color2:                          #7E807E
-*color10:                         #8D8F8D
-
-!! yellow dark/light
-*color3:                          #4C4F4D
-*color11:                         #4E524F
-
-!! blue dark/light
-*color4:                          #16A085
-*color12:                         #13BF9D
-
-!! magenta dark/light
-*color5:                          #43746A
-*color13:                         #487D72
-
-!! cyan dark/light
-*color6:                          #00CCCC
-*color14:                         #00D1D1
-
-!! white dark/light
-*color7:                          #E0E0E0
-*color15:                         #E8E8E8
-
-Xcursor.theme: Adwaita
-Xcursor.size:                     10
-
-XTerm*background:                 #272827
-XTerm*foreground:                 #fdf6e3
-XTerm*reverseVideo:               on
-XTerm*faceName:                   Terminus:size=11:antialias=true
-XTerm*selectToClipboard:          true
-
-URxvt.font:                       xft:Sauce Code Pro Nerd Font:size=12:antialias=true
+URxvt.font:                       xft:Hack Regular Nerd Font Complete:size=12:antialias=true
 URxvt.boldFont:
 
-URxvt.depth:                      32
-URxvt.background:                 [80]#000000
-URxvt*scrollBar:                  false
-URxvt*mouseWheelScrollPage:       false
-URxvt*cursorBlink:                true
-URxvt*background:                 black
-URxvt*foreground:                 grey
-URxvt*saveLines:                  5000
+!URxvt*depth:            24
+URxvt*borderless: 	1
+URxvt*scrollBar:        false
+URxvt*saveLines:  	2000
+URxvt.transparent:      true
+URxvt*.shading: 	20
 
-URxvt.keysym.M-C-c:              perl:clipboard:copy
-URxvt.keysym.M-v:                perl:clipboard:paste
-URxvt.keysym.M-C-v:              perl:clipboard:paste_escaped
+! Transparency - real
+! URxvt*depth: 32
+! URxvt*background: rgba:2200/2700/3200/f555
 
+! Transparency - fake
+! URxvt.transparent: true
+! URxvt.shading: 20
+
+!! perl extensions
+URxvt.perl-ext:             default,url-select,clipboard
+
+! url-select (part of urxvt-perls package)
+URxvt.keysym.M-u:           perl:url-select:select_next
+URxvt.url-select.autocopy:  true
+URxvt.url-select.button:    2
+URxvt.url-select.launcher:  firefox
+URxvt.url-select.underline: true
+
+! Nastavuje kopirovani
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+URxvt.keysym.Shift-Control-C:   perl:clipboard:copy
+
+! disable the ctrl+shift 'feature'
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
+#define nord0 #2E3440
+#define nord1 #3B4252
+#define nord2 #434C5E
+#define nord3 #4C566A
+#define nord4 #D8DEE9
+#define nord5 #E5E9F0
+#define nord6 #ECEFF4
+#define nord7 #8FBCBB
+#define nord8 #88C0D0
+#define nord9 #81A1C1
+#define nord10 #5E81AC
+#define nord11 #BF616A
+#define nord12 #D08770
+#define nord13 #EBCB8B
+#define nord14 #A3BE8C
+#define nord15 #B48EAD
+
+*.foreground:   nord4
+*.background:   nord0
+*.cursorColor:  nord4
+*fading: 35
+*fadeColor: nord3
+
+*.color0: nord1
+*.color1: nord11
+*.color2: nord14
+*.color3: nord13
+*.color4: nord9
+*.color5: nord15
+*.color6: nord8
+*.color7: nord5
+*.color8: nord3
+*.color9: nord11
+*.color10: nord14
+*.color11: nord13
+*.color12: nord9
+*.color13: nord15
+*.color14: nord7
+*.color15: nord6
