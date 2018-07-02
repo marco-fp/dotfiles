@@ -1,11 +1,19 @@
 filetype on
 set number
 set mouse=a
-
+set clipboard=unnamed
+ 
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
 set expandtab
+
+filetype plugin indent on 
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 nmap <F1> :Vexplore <CR>
 
