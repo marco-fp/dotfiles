@@ -1,3 +1,5 @@
 .DS_Store
 result
 *.hm-backup
+home/.config/herdr/*.log
+home/.config/herdr/session.json
