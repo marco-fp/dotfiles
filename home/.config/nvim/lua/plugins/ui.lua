@@ -4,7 +4,7 @@ return {
     lazy = false,
     priority = 1000,  -- load before everything else so highlights apply
     config = function()
-      require('nord').setup({})
+      require('nord').setup({ transparent = true })
       vim.cmd.colorscheme('nord')
     end,
   },
