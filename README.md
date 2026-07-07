@@ -11,8 +11,6 @@ One Nix flake that configures every machine I use:
 Both share the same `home.nix`, so the shell, editor, CLI tools, and agent
 configuration are identical everywhere.
 
-Adapted from [kunchenguid/dotfiles](https://github.com/kunchenguid/dotfiles).
-
 [nix-darwin]: https://github.com/nix-darwin/nix-darwin
 [home-manager]: https://github.com/nix-community/home-manager
 [nix-homebrew]: https://github.com/zhaofengli/nix-homebrew
