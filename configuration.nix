@@ -10,15 +10,16 @@
   users.users.${user}.home = "/Users/${user}";
   system.stateVersion = 6;
 
+  # No dock.* or _HIHideMenuBar keys here on purpose: managing them makes
+  # every activation restart the Dock process, which kills cmd-tab and the
+  # Dock itself until manually kickstarted. Dock behavior stays user-managed.
   system.defaults = {
     NSGlobalDomain = {
       AppleInterfaceStyle = "Dark";
       KeyRepeat = 2;          # fast key repeat
       InitialKeyRepeat = 15;  # short delay before repeat
-      _HIHideMenuBar = false; # keep the menu bar visible
       AppleShowAllExtensions = true;
     };
-    dock.autohide = false;    # keep the Dock visible
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
     finder.CreateDesktop = false;          # clean desktop
     trackpad.Clicking = true;              # tap to click
