@@ -1,3 +1,6 @@
+[theme]
+name = "nord"
+
 [keys]
 prefix = "ctrl+b"
 focus_pane_left  = "prefix+h"
