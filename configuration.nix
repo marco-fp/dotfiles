@@ -15,10 +15,10 @@
       AppleInterfaceStyle = "Dark";
       KeyRepeat = 2;          # fast key repeat
       InitialKeyRepeat = 15;  # short delay before repeat
-      _HIHideMenuBar = true;  # auto-hide the menu bar
+      _HIHideMenuBar = false; # keep the menu bar visible
       AppleShowAllExtensions = true;
     };
-    dock.autohide = true;
+    dock.autohide = false;    # keep the Dock visible
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
     finder.CreateDesktop = false;          # clean desktop
     trackpad.Clicking = true;              # tap to click
