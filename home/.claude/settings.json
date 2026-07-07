@@ -20,6 +20,7 @@
       "Read(.secrets)"
     ]
   },
+  "model": "opus[1m]",
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
@@ -32,10 +33,5 @@
   "effortLevel": "xhigh",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark-ansi",
-  "model": "claude-fable-5[1m]",
-  "statusLine": {
-    "type": "command",
-    "command": "~/.dotfiles/home/.claude/statusline.sh"
-  }
+  "theme": "dark-ansi"
 }
