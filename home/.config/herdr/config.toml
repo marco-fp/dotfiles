@@ -1,5 +1,7 @@
+# "terminal" inherits the terminal's ANSI palette (Nord via wezterm);
+# herdr's own "nord" theme double-applies colors and becomes unreadable
 [theme]
-name = "nord"
+name = "terminal"
 
 [keys]
 prefix = "ctrl+b"

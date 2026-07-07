@@ -9,14 +9,23 @@ config.hide_tab_bar_if_only_one_tab = true
 config.window_decorations = "RESIZE"
 
 config.keys = {
-	-- cmd+k clears like iTerm2: wipe scrollback + screen, then redraw the prompt
+	-- cmd+k clears like iTerm2, but only at a shell prompt: TUIs (herdr, nvim)
+	-- draw on the alternate screen and a clear would wipe their UI
 	{
 		key = "k",
 		mods = "CMD",
-		action = wezterm.action.Multiple({
-			wezterm.action.ClearScrollback("ScrollbackAndViewport"),
-			wezterm.action.SendKey({ key = "l", mods = "CTRL" }),
-		}),
+		action = wezterm.action_callback(function(window, pane)
+			if pane:is_alt_screen_active() then
+				return
+			end
+			window:perform_action(
+				wezterm.action.Multiple({
+					wezterm.action.ClearScrollback("ScrollbackAndViewport"),
+					wezterm.action.SendKey({ key = "l", mods = "CTRL" }),
+				}),
+				pane
+			)
+		end),
 	},
 }
 
