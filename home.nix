@@ -21,6 +21,7 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    marksman  # markdown LSP: cross-file link nav, anchor completion, rename
     nerd-fonts.jetbrains-mono
   ] ++ [
     inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default  # agent multiplexer
