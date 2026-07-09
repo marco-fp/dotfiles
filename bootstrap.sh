@@ -36,10 +36,10 @@ case "$(uname -s)" in
     ;;
   Linux)
     echo "==> Step 3: first home-manager switch (release-26.05)"
-    attr="$USER"
-    [ "$(uname -m)" = "aarch64" ] && attr="${USER}-arm"
+    # attr is the arch; the config picks up the current $USER/$HOME via --impure
+    attr="$(uname -m)-linux"
     nix run github:nix-community/home-manager/release-26.05 -- \
-      switch --flake ~/.dotfiles#"$attr" -b hm-backup
+      switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
     echo "==> To make zsh the login shell (home-manager can't do this):"
     echo "    command -v zsh | sudo tee -a /etc/shells && chsh -s \"\$(command -v zsh)\""
     ;;

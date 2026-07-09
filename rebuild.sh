@@ -20,9 +20,9 @@ case "$(uname -s)" in
     exec sudo "$DR" switch --flake ~/.dotfiles#mac
     ;;
   Linux)
-    attr="$USER"
-    [ "$(uname -m)" = "aarch64" ] && attr="${USER}-arm"
-    exec home-manager switch --flake ~/.dotfiles#"$attr" -b hm-backup
+    # attr is the arch; the config resolves $USER/$HOME at eval via --impure
+    attr="$(uname -m)-linux"
+    exec home-manager switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
     ;;
   *)
     echo "unsupported OS: $(uname -s)" >&2

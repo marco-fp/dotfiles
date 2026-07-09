@@ -16,6 +16,8 @@
 
   outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, nix-homebrew, herdr }:
     let
+      # Mac only: the personal machine has a fixed login name. Linux/VPS configs
+      # below resolve the username from the invoking environment instead.
       user = "mfernandezpranno";
     in
     {
@@ -36,20 +38,24 @@
       };
 
       # Standalone home-manager for remote Linux servers (any distro with Nix).
-      # x86_64 VPS: home-manager switch --flake ~/.dotfiles#mfernandezpranno
-      # ARM VPS:   home-manager switch --flake ~/.dotfiles#mfernandezpranno-arm
+      # Username-agnostic: keyed by arch, and the config resolves $USER / $HOME
+      # of whoever runs the switch. Reading the env needs --impure, which
+      # bootstrap.sh / rebuild.sh pass automatically.
+      #   x86_64 VPS: home-manager switch --impure --flake ~/.dotfiles#x86_64-linux
+      #   ARM VPS:    home-manager switch --impure --flake ~/.dotfiles#aarch64-linux
       homeConfigurations =
         let
           mkHome = system: home-manager.lib.homeManagerConfiguration {
             # import (not legacyPackages) so allowUnfree covers claude-code
             pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-            extraSpecialArgs = { inherit user inputs; };
+            # username comes from the invoking environment, not a hardcoded name
+            extraSpecialArgs = { user = builtins.getEnv "USER"; inherit inputs; };
             modules = [ ./home.nix ];
           };
         in
         {
-          "${user}" = mkHome "x86_64-linux";
-          "${user}-arm" = mkHome "aarch64-linux";
+          "x86_64-linux" = mkHome "x86_64-linux";
+          "aarch64-linux" = mkHome "aarch64-linux";
         };
     };
 }

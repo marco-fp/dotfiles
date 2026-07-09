@@ -4,11 +4,19 @@ let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
   # Edit-in-place: the real file stays in the repo, the home path points at it.
   link = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/${path}";
+  # GUI-only bits (terminal emulator, patched fonts) install only where a GUI
+  # exists. Mac always has one; Linux is headless by default but opts in with
+  # GUI=1 (e.g. `GUI=1 ./rebuild.sh`). isDarwin short-circuits the `||`, so the
+  # getEnv is never read on Mac and that build stays pure.
+  gui = pkgs.stdenv.isDarwin || builtins.getEnv "GUI" == "1";
 in
 {
   home.username = user;
+  # Darwin keeps the fixed path; Linux (standalone HM) uses the real home of the
+  # invoking user, so it works for any username incl. root (/root). getEnv is
+  # lazy - never forced on Darwin, so the Mac build stays pure.
   home.homeDirectory =
-    if pkgs.stdenv.isDarwin then "/Users/${user}" else "/home/${user}";
+    if pkgs.stdenv.isDarwin then "/Users/${user}" else builtins.getEnv "HOME";
   home.stateVersion = "26.05";
 
   # standalone `home-manager` CLI on Linux servers
@@ -22,13 +30,14 @@ in
     lazygit
     neovim
     marksman  # markdown LSP: cross-file link nav, anchor completion, rename
-    nerd-fonts.jetbrains-mono
   ] ++ [
     inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default  # agent multiplexer
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     claude-code  # macOS gets it via homebrew cask instead
+  ] ++ lib.optionals gui [
+    nerd-fonts.jetbrains-mono  # patched font, only useful with a GUI terminal
   ];
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig.enable = gui;
   home.sessionVariables.EDITOR = "nvim";
 
   programs.zsh = {
@@ -71,7 +80,8 @@ in
     };
   };
 
-  home.file.".config/wezterm".source = link ".config/wezterm";
+  # wezterm is a GUI terminal; only link its config on machines with a GUI
+  home.file.".config/wezterm" = lib.mkIf gui { source = link ".config/wezterm"; };
   home.file.".config/nvim".source = link ".config/nvim";
   home.file.".config/herdr".source = link ".config/herdr";
   home.file.".claude/settings.json".source = link ".claude/settings.json";

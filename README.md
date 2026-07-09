@@ -5,8 +5,8 @@ One Nix flake that configures every machine I use:
 - **Mac** (local dev): [nix-darwin] + [home-manager] + [nix-homebrew]
   via `darwinConfigurations.mac`
 - **Linux servers** (agent VPS over SSH, any distro): standalone home-manager
-  via `homeConfigurations.mfernandezpranno` (x86_64) and
-  `homeConfigurations.mfernandezpranno-arm` (aarch64)
+  via `homeConfigurations.x86_64-linux` and `homeConfigurations.aarch64-linux`,
+  which adopt whatever username runs the switch (no per-user config needed)
 
 Both share the same `home.nix`, so the shell, editor, CLI tools, and agent
 configuration are identical everywhere.
@@ -83,14 +83,19 @@ Nix flakes only see **git-tracked files**. If a build fails with
 | Change Claude Code settings | Edit `home/.claude/settings.json` | no |
 | Version a new config dir | Put files in `home/<path>`, add a `link` line in `home.nix` | yes (once) |
 | Add a nvim plugin | Add spec under `home/.config/nvim/lua/plugins/` | no (`:Lazy sync`) |
-| Support a new Linux user/arch | Add an entry to `homeConfigurations` in `flake.nix` | n/a |
+| Run on a new Linux arch | Add an arch entry to `homeConfigurations` in `flake.nix` | n/a |
 | Update all pinned inputs | `nix flake update`, then `./rebuild.sh` | yes |
 
 Conventions:
 
-- The username lives in exactly one place: `let user = ...` in `flake.nix`.
+- The Mac username is set once (`let user = ...` in `flake.nix`); Linux/VPS
+  configs derive the username from `$USER` at switch time (needs `--impure`,
+  which `bootstrap.sh`/`rebuild.sh` pass for you).
 - Platform differences stay inside `home.nix` guards
   (`pkgs.stdenv.isDarwin` / `isLinux`); everything else is shared.
+- GUI-only bits (wezterm config, patched fonts) install only where a GUI
+  exists: Mac always, Linux never unless you switch with `GUI=1` (e.g.
+  `GUI=1 ./rebuild.sh`). Gated by `gui` in `home.nix`.
 - Theme is Nord, font is JetBrains Mono (Nerd Font patched), set in
   `home/.config/wezterm/wezterm.lua`, `home/.config/nvim/lua/plugins/ui.lua`,
   and `nerd-fonts.jetbrains-mono` in `home.nix`.
@@ -118,8 +123,8 @@ Conventions:
   owned that file. Repoint it through the stable nix-homebrew path:
   `ln -sfn ../../../Library/Homebrew/../../completions/zsh/_brew /opt/homebrew/share/zsh/site-functions/_brew`
 - **Validate without switching**:
-  `nix flake show` evaluates all configs;
-  `nix eval --raw .#homeConfigurations.mfernandezpranno.activationPackage.drvPath`
+  `nix flake show --impure` evaluates all configs;
+  `nix eval --impure --raw .#homeConfigurations.x86_64-linux.activationPackage.drvPath`
   cross-evaluates the Linux config from the Mac.
 
 ## Notes for agents
