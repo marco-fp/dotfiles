@@ -1,5 +1,7 @@
 .DS_Store
 result
 *.hm-backup
-home/.config/herdr/*.log
-home/.config/herdr/session.json
+# herdr writes runtime files (logs, sockets, session + release-note cache)
+# into its config dir; only config.toml is ours to track.
+home/.config/herdr/*
+!home/.config/herdr/config.toml
