@@ -1,0 +1,5 @@
+# Versioned Codex config (portable settings only). Codex appends
+# machine-specific [projects.*] trust entries at runtime - leave those
+# uncommitted.
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"

@@ -34,6 +34,7 @@ in
     inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default  # agent multiplexer
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     claude-code  # macOS gets it via homebrew cask instead
+    codex        # macOS gets it via homebrew cask instead
   ] ++ lib.optionals gui [
     nerd-fonts.jetbrains-mono  # patched font, only useful with a GUI terminal
   ];
@@ -85,6 +86,7 @@ in
   home.file.".config/nvim".source = link ".config/nvim";
   home.file.".config/herdr".source = link ".config/herdr";
   home.file.".claude/settings.json".source = link ".claude/settings.json";
+  home.file.".codex/config.toml".source = link ".codex/config.toml";
 
   # one AGENTS.md shared by every agent CLI
   home.file.".claude/CLAUDE.md".source = link "AGENTS.md";

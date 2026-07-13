@@ -38,6 +38,7 @@
     casks = [
       "wezterm"
       "claude-code"
+      "codex"
     ];
   };
 }

@@ -49,6 +49,7 @@ flake.nix               inputs + machine configs; username set once here
         ├── AGENTS.md               -> ~/.claude/CLAUDE.md, ~/.codex/AGENTS.md,
         │                              ~/.config/opencode/AGENTS.md
         ├── .claude/settings.json   -> ~/.claude/settings.json
+        ├── .codex/config.toml      -> ~/.codex/config.toml
         └── .config/{nvim,wezterm,herdr}/ -> ~/.config/...
 ```
 
@@ -101,6 +102,10 @@ Conventions:
   and `nerd-fonts.jetbrains-mono` in `home.nix`.
 - claude-code comes from the homebrew cask on Mac (self-updates) and from
   nixpkgs on Linux (pinned; `lib.optionals pkgs.stdenv.isLinux`).
+- codex comes from the homebrew cask on Mac (self-updates) and from nixpkgs
+  on Linux (pinned), same split as claude-code. It rewrites its own
+  `config.toml` with machine-specific `[projects.*]` trust entries; leave those
+  uncommitted.
 - herdr comes from its own flake input on both platforms.
 
 ## Troubleshooting
