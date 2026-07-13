@@ -34,12 +34,23 @@ in
     inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default  # agent multiplexer
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     claude-code  # macOS gets it via homebrew cask instead
-    codex        # macOS gets it via homebrew cask instead
+    gcc          # C toolchain: provides `cc`, the linker rust/cargo needs to build
+                 # (macOS gets this from the Xcode Command Line Tools instead)
+    # codex is not installed via Nix: it ships several releases/week, faster than
+    # any Nix channel tracks. It comes from the official installer (install-codex.sh,
+    # run by bootstrap/rebuild) into ~/.local/bin, which is on PATH via sessionPath.
   ] ++ lib.optionals gui [
     nerd-fonts.jetbrains-mono  # patched font, only useful with a GUI terminal
   ];
   fonts.fontconfig.enable = gui;
   home.sessionVariables.EDITOR = "nvim";
+  # Tools installed outside Nix by their official installers land here; put these
+  # on PATH declaratively so the installers never edit the read-only,
+  # home-manager-managed shell profiles (~/.zshrc etc).
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.local/bin"  # codex
+    "${config.home.homeDirectory}/.cargo/bin"  # rust (rustup/cargo)
+  ];
 
   programs.zsh = {
     enable = true;

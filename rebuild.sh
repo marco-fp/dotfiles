@@ -17,12 +17,17 @@ case "$(uname -s)" in
       echo "darwin-rebuild not found - run ./bootstrap.sh first" >&2
       exit 1
     fi
-    exec sudo "$DR" switch --flake ~/.dotfiles#mac
+    # not exec: the switch runs under sudo, but codex installs as the user after
+    sudo "$DR" switch --flake ~/.dotfiles#mac
+    "$DIR/install-codex.sh"
+    "$DIR/install-rust.sh"
     ;;
   Linux)
     # attr is the arch; the config resolves $USER/$HOME at eval via --impure
     attr="$(uname -m)-linux"
-    exec home-manager switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
+    home-manager switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
+    "$DIR/install-codex.sh"
+    "$DIR/install-rust.sh"
     ;;
   *)
     echo "unsupported OS: $(uname -s)" >&2

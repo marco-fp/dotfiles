@@ -102,10 +102,18 @@ Conventions:
   and `nerd-fonts.jetbrains-mono` in `home.nix`.
 - claude-code comes from the homebrew cask on Mac (self-updates) and from
   nixpkgs on Linux (pinned; `lib.optionals pkgs.stdenv.isLinux`).
-- codex comes from the homebrew cask on Mac (self-updates) and from nixpkgs
-  on Linux (pinned), same split as claude-code. It rewrites its own
-  `config.toml` with machine-specific `[projects.*]` trust entries; leave those
-  uncommitted.
+- codex is **not** managed by Nix: it ships several releases/week, faster than
+  any Nix channel tracks. `install-codex.sh` runs the official installer
+  (`curl -fsSL https://chatgpt.com/codex/install.sh | sh`) into `~/.local/bin`
+  on both platforms; `bootstrap.sh` and `rebuild.sh` invoke it, so every switch
+  installs or updates codex to the latest release. `~/.local/bin` is on PATH via
+  `home.sessionPath`. codex rewrites its own `config.toml` with machine-specific
+  `[projects.*]` trust entries; leave those uncommitted.
+- rust is **not** managed by Nix either: `install-rust.sh` runs rustup
+  (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`) with
+  `--no-modify-path` into `~/.cargo/bin` (on PATH via `home.sessionPath`).
+  bootstrap/rebuild install it when absent and run `rustup update` otherwise, so
+  the toolchain self-manages the same way it does outside Nix.
 - herdr comes from its own flake input on both platforms.
 
 ## Troubleshooting

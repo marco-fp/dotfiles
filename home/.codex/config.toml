@@ -3,3 +3,6 @@
 # uncommitted.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"
+
+[projects."/home/mfernandezpranno/code/dotfiles"]
+trust_level = "trusted"

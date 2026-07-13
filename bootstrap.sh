@@ -49,4 +49,9 @@ case "$(uname -s)" in
     ;;
 esac
 
+# codex and rust are installed outside Nix (see install-codex.sh / install-rust.sh);
+# do it here so a fresh machine has them immediately without a first ./rebuild.sh.
+"$DIR/install-codex.sh"
+"$DIR/install-rust.sh"
+
 echo "==> Done. Use ./rebuild.sh for future changes."
