@@ -19,14 +19,15 @@
     },
     "herdr": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1783356688,
-        "narHash": "sha256-Mp7UVhtqMx2xeRbnOz5VPyMIoCT4jRf4G504IJ+unik=",
+        "lastModified": 1783991898,
+        "narHash": "sha256-FQT59C77WJj1+OTYhRbJqMcgx+O0yUW4YQFcnH7Qwk4=",
         "owner": "ogulcancelik",
         "repo": "herdr",
-        "rev": "ed31632ebf6e63ca87e6d9a57b7eee79df5ae142",
+        "rev": "4c9a3f380d221fe02fa8c4d2d9ef94438fa1957f",
         "type": "github"
       },
       "original": {
@@ -134,6 +135,27 @@
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "herdr",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783577481,
+        "narHash": "sha256-EWMxOWrJ031f8f/lrcEmhTRs4npw1/5N3Hcjin846c8=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "4cdea398dc491b082dccdce0fad1ed0b75fa3394",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     }
   },
