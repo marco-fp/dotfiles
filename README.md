@@ -46,7 +46,7 @@ ports **5000–5010** with `tailscale serve`. Run each development app on
 `127.0.0.1:<port>`, then open this URL from a device on the same tailnet:
 
 ```text
-https://<vps>.<tailnet>.ts.net:<port>
+https://remote.taile42e61.ts.net:<port>/
 ```
 
 The first run prints a URL for authenticating the VPS. Tailscale Serve also
