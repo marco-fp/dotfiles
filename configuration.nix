@@ -39,6 +39,7 @@
       "wezterm"
       "claude-code"
       "codex"
+      "tailscale-app"
     ];
   };
 }

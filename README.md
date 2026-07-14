@@ -39,6 +39,27 @@ command -v zsh | sudo tee -a /etc/shells && chsh -s "$(command -v zsh)"
 ./rebuild.sh
 ```
 
+## Private VPS development ports
+
+On Linux, bootstrap/rebuild installs Tailscale and privately publishes HTTPS
+ports **5000–5010** with `tailscale serve`. Run each development app on
+`127.0.0.1:<port>`, then open this URL from a device on the same tailnet:
+
+```text
+https://<vps>.<tailnet>.ts.net:<port>
+```
+
+The first run prints a URL for authenticating the VPS. Tailscale Serve also
+requires HTTPS Certificates for the tailnet; if they are disabled, follow the
+consent URL printed by `tailscale serve` and re-run `./rebuild.sh`.
+
+The automation does not enable Tailscale SSH, advertise or accept routes, use
+Funnel, or replace normal OpenSSH. It preserves public SSH on port 22 before
+adding UFW rules that allow the development range on `tailscale0` and deny it
+on the VPS's public interface. It never enables, resets, or changes UFW's
+default policy. Keep a second SSH connection open during the first deployment
+and verify `sudo ufw status verbose` before closing the original session.
+
 ## How it works
 
 ```
@@ -84,6 +105,7 @@ Nix flakes only see **git-tracked files**. If a build fails with
 | Change Claude Code settings | Edit `home/.claude/settings.json` | no |
 | Version a new config dir | Put files in `home/<path>`, add a `link` line in `home.nix` | yes (once) |
 | Add a nvim plugin | Add spec under `home/.config/nvim/lua/plugins/` | no (`:Lazy sync`) |
+| Expose a dev app over Tailscale (VPS) | Bind it to `127.0.0.1` on port 5000–5010 and use its private `*.ts.net` URL | no |
 | Run on a new Linux arch | Add an arch entry to `homeConfigurations` in `flake.nix` | n/a |
 | Update all pinned inputs | `nix flake update`, then `./rebuild.sh` | yes |
 
@@ -114,6 +136,9 @@ Conventions:
   `--no-modify-path` into `~/.cargo/bin` (on PATH via `home.sessionPath`).
   bootstrap/rebuild install it when absent and run `rustup update` otherwise, so
   the toolchain self-manages the same way it does outside Nix.
+- Tailscale is installed on macOS through the `tailscale-app` Homebrew cask and
+  on Linux through `install-tailscale.sh`. Linux bootstrap/rebuild also runs
+  `expose-ports.sh`; macOS never exposes the development port range.
 - herdr comes from its own flake input on both platforms.
 
 ## Troubleshooting

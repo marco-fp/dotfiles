@@ -8,6 +8,12 @@
 
 **Tech Stack:** Bash, Tailscale (`tailscale serve`), ufw, nix-darwin/Homebrew, home-manager.
 
+> **Confirmed implementation safety amendment (2026-07-14):** Preserve existing
+> Serve configuration instead of running `tailscale serve reset`. Preserve SSH
+> with an explicit port 22 allow rule, then add an interface-specific public deny
+> and `tailscale0` allow. Never enable/reset UFW or change its default policy from
+> automation. The live rollout requires a second SSH session.
+
 ## Global Constraints
 
 - Port range is **5000–5010**, defined once as `PORT_START=5000` / `PORT_END=5010` at the top of `expose-ports.sh`.

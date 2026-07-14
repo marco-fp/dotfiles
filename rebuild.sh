@@ -26,6 +26,8 @@ case "$(uname -s)" in
     # attr is the arch; the config resolves $USER/$HOME at eval via --impure
     attr="$(uname -m)-linux"
     home-manager switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
+    "$DIR/install-tailscale.sh"
+    "$DIR/expose-ports.sh"
     "$DIR/install-codex.sh"
     "$DIR/install-rust.sh"
     ;;

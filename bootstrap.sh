@@ -40,6 +40,9 @@ case "$(uname -s)" in
     attr="$(uname -m)-linux"
     nix run github:nix-community/home-manager/release-26.05 -- \
       switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
+    echo "==> Step 4: Tailscale (install + join tailnet, then expose dev ports)"
+    "$DIR/install-tailscale.sh"
+    "$DIR/expose-ports.sh"
     echo "==> To make zsh the login shell (home-manager can't do this):"
     echo "    command -v zsh | sudo tee -a /etc/shells && chsh -s \"\$(command -v zsh)\""
     ;;
