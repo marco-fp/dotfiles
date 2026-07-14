@@ -10,8 +10,9 @@ Run web/HTTP apps on the Linux VPS and expose a fixed range of ports
 the public internet**, so they can be reviewed from the laptop's browser during
 SSH-based development.
 
-The laptop is already on the tailnet; the VPS is not. macOS (the laptop) must
-not expose anything — exposure is a Linux-only, VPS-only concern.
+The laptop is already on the tailnet; the VPS is not. Tailscale is installed and
+managed on **both** platforms, but **exposure** (the port range) is a Linux-only,
+VPS-only concern — the Mac never exposes anything.
 
 ## Non-goals (explicitly out of scope)
 
@@ -20,7 +21,7 @@ not expose anything — exposure is a Linux-only, VPS-only concern.
   separately and deliberately, not in this work.
 - Non-HTTP services, per-project declarative port config, ad-hoc port helpers,
   Tailscale Funnel (public exposure), or Tailscale SSH.
-- Any change to the macOS/laptop Tailscale setup.
+- Exposing any ports on macOS.
 
 ## Approach
 
@@ -50,13 +51,25 @@ laptop browser (on tailnet)  →  reviews the app
 
 ## Components
 
-Three shell scripts in the repo root, following the existing `install-*.sh`
-pattern (`set -euo pipefail`, `curl … | sh`, warn-and-continue on failure,
-idempotent, non-interactive where possible).
+Tailscale install is split by platform, matching this repo's conventions: the
+Mac GUI app comes from a Homebrew cask (like `claude-code`/`codex`), while Linux
+uses a shell script following the existing `install-*.sh` pattern (`set -euo
+pipefail`, `curl … | sh`, warn-and-continue on failure, idempotent,
+non-interactive where possible).
+
+### 0. macOS install — Homebrew cask in `configuration.nix`
+
+- Add the Tailscale cask to `homebrew.casks` (verify the exact cask name —
+  `tailscale` vs `tailscale-app` — during implementation). Installs the menu-bar
+  GUI app used for auth/status; self-updating.
+- No `onActivation.cleanup` is set, so the laptop's pre-existing, already-authed
+  Tailscale install is adopted, not disturbed. Applied by `./rebuild.sh` (Mac).
+- No `tailscale up` scripting on Mac — auth is via the GUI app (already done).
 
 ### 1. `install-tailscale.sh` — Linux only
 
-- Early-exit no-op on macOS (`uname -s` = Darwin) — the laptop is untouched.
+- Early-exit no-op on macOS (`uname -s` = Darwin) — Mac install is handled by the
+  cask above.
 - Install Tailscale via the official installer (`curl -fsSL https://tailscale.com/install.sh | sh`),
   which installs the **latest stable**. Skip if `tailscale` is already present.
 - Bring the node onto the tailnet with `sudo tailscale up` (interactive browser
@@ -94,6 +107,8 @@ idempotent, non-interactive where possible).
   OS (redundant but safe).
 - Runs on **every `./rebuild.sh`** (self-healing, consistent with how
   `install-codex.sh` / `install-rust.sh` are invoked).
+- The macOS cask needs no script wiring — it is applied by the existing
+  `darwin-rebuild switch` that `bootstrap.sh` / `rebuild.sh` already run.
 
 ## One-time manual step (cannot be scripted without an API key)
 
@@ -123,6 +138,7 @@ to enable and where. Also documented in the README.
 
 ## Documentation
 
-Add a README section (and an "Extending" table row) covering: what the port
-range is, how to reach a dev app from the laptop, the one-time MagicDNS/HTTPS
-admin toggle, and that exposure is Linux/VPS-only.
+Add a README section (and an "Extending" table row) covering: that Tailscale is
+installed on both platforms (Mac via cask, Linux via `install-tailscale.sh`),
+what the port range is, how to reach a dev app from the laptop, the one-time
+MagicDNS/HTTPS admin toggle, and that exposure is Linux/VPS-only.
