@@ -1,3 +1,4 @@
+onboarding = false
 # "terminal" inherits the terminal's ANSI palette (Nord via wezterm);
 # herdr's own "nord" theme double-applies colors and becomes unreadable
 [theme]
@@ -19,3 +20,6 @@ copy_mode  = "prefix+y"  # herdr's copy-mode entry key; copy-mode's own internal
 
 [ui]
 agent_panel_sort = "priority"
+
+[ui.sound]
+enabled = false

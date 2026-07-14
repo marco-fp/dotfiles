@@ -3,12 +3,17 @@
 # uncommitted.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
 approvals_reviewer = "user"
 
 [projects."/home/mfernandezpranno/code/dotfiles"]
 trust_level = "trusted"
 
 [projects."/home/mfernandezpranno/code/sigmund"]
+trust_level = "trusted"
+
+[projects."/home/mfernandezpranno"]
 trust_level = "trusted"
 
 [notice]
