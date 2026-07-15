@@ -1,12 +1,35 @@
 return {
   {
     'gbprod/nord.nvim',
-    lazy = false,
-    priority = 1000,  -- load before everything else so highlights apply
-    config = function()
-      require('nord').setup({})
-      vim.cmd.colorscheme('nord')
-    end,
+    lazy = true,
+    opts = {},
+  },
+  {
+    'folke/tokyonight.nvim',
+    lazy = true,
+    opts = {},
+  },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    lazy = true,
+    opts = { auto_integrations = true },
+  },
+  {
+    'ellisonleao/gruvbox.nvim',
+    lazy = true,
+    opts = { contrast = 'hard' },
+  },
+  {
+    'rebelot/kanagawa.nvim',
+    lazy = true,
+    opts = { theme = 'wave' },
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+    lazy = true,
+    opts = { dark_variant = 'moon' },
   },
   {
     'folke/which-key.nvim',
@@ -14,4 +37,3 @@ return {
     config = true,  -- popup that shows what my leader keys do
   },
 }
-

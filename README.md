@@ -119,9 +119,11 @@ Conventions:
 - GUI-only bits (wezterm config, patched fonts) install only where a GUI
   exists: Mac always, Linux never unless you switch with `GUI=1` (e.g.
   `GUI=1 ./rebuild.sh`). Gated by `gui` in `home.nix`.
-- Theme is Nord, font is JetBrains Mono (Nerd Font patched), set in
-  `home/.config/wezterm/wezterm.lua`, `home/.config/nvim/lua/plugins/ui.lua`,
-  and `nerd-fonts.jetbrains-mono` in `home.nix`.
+- WezTerm and Neovim share a persistent theme selection. `Cmd+Shift+T` cycles
+  both in sync; `theme next|prev|set|list` works from the shell, and Neovim has
+  `:ThemeNext`, `:ThemePrev`, and `:Theme <name>`. The font is JetBrains Mono
+  (Nerd Font patched), configured in `home/.config/wezterm/wezterm.lua` and
+  `nerd-fonts.jetbrains-mono` in `home.nix`.
 - claude-code comes from the homebrew cask on Mac (self-updates) and from
   nixpkgs on Linux (pinned; `lib.optionals pkgs.stdenv.isLinux`).
 - codex is **not** managed by Nix: it ships several releases/week, faster than
