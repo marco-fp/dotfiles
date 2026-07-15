@@ -177,9 +177,9 @@ in
     claude-code  # macOS gets it via homebrew cask instead
     gcc          # C toolchain: provides `cc`, the linker rust/cargo needs to build
                  # (macOS gets this from the Xcode Command Line Tools instead)
-    # codex is not installed via Nix: it ships several releases/week, faster than
-    # any Nix channel tracks. It comes from the official installer (install-codex.sh,
-    # run by bootstrap/rebuild) into ~/.local/bin, which is on PATH via sessionPath.
+    # codex is not installed via Nix: macOS uses the Homebrew cask and Linux uses
+    # the official installer. install-codex.sh checks for updates without
+    # reinstalling an unchanged version.
   ] ++ lib.optionals gui [
     nerd-fonts.jetbrains-mono  # patched font, only useful with a GUI terminal
   ];

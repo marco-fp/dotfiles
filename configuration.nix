@@ -35,11 +35,12 @@
     enable = true;
     # no onActivation.cleanup: pre-existing brews (ghostty, orbstack, ...)
     # are not declared here yet and must survive activation
+    # tailscale-app is handled by install-tailscale.sh so an existing App Store
+    # or manually installed app bundle does not collide with Homebrew.
     casks = [
       "wezterm"
       "claude-code"
       "codex"
-      "tailscale-app"
     ];
   };
 }

@@ -3,6 +3,15 @@
 set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
+run_optional() {
+  local label="$1"
+  shift
+
+  if ! "$@"; then
+    echo "WARNING: $label failed; continuing with remaining installers" >&2
+  fi
+}
+
 # home.nix resolves its mkOutOfStoreSymlink paths through ~/.dotfiles,
 # so this link is load-bearing: without it every linked config breaks.
 ln -sfn "$DIR" ~/.dotfiles
@@ -19,17 +28,18 @@ case "$(uname -s)" in
     fi
     # not exec: the switch runs under sudo, but codex installs as the user after
     sudo "$DR" switch --flake ~/.dotfiles#mac
-    "$DIR/install-codex.sh"
-    "$DIR/install-rust.sh"
+    run_optional "Tailscale setup" "$DIR/install-tailscale.sh"
+    run_optional "Codex setup" "$DIR/install-codex.sh"
+    run_optional "Rust setup" "$DIR/install-rust.sh"
     ;;
   Linux)
     # attr is the arch; the config resolves $USER/$HOME at eval via --impure
     attr="$(uname -m)-linux"
     home-manager switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
-    "$DIR/install-tailscale.sh"
-    "$DIR/expose-ports.sh"
-    "$DIR/install-codex.sh"
-    "$DIR/install-rust.sh"
+    run_optional "Tailscale setup" "$DIR/install-tailscale.sh"
+    run_optional "Tailscale port exposure" "$DIR/expose-ports.sh"
+    run_optional "Codex setup" "$DIR/install-codex.sh"
+    run_optional "Rust setup" "$DIR/install-rust.sh"
     ;;
   *)
     echo "unsupported OS: $(uname -s)" >&2

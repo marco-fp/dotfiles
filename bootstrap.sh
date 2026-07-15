@@ -5,6 +5,15 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
+run_optional() {
+  local label="$1"
+  shift
+
+  if ! "$@"; then
+    echo "WARNING: $label failed; continuing with remaining installers" >&2
+  fi
+}
+
 echo "==> Step 1: Determinate Nix"
 if command -v nix >/dev/null 2>&1; then
   echo "    nix already installed, skipping"
@@ -31,6 +40,7 @@ case "$(uname -s)" in
     NIX_BIN="$(command -v nix)"
     sudo "$NIX_BIN" run github:nix-darwin/nix-darwin/nix-darwin-26.05#darwin-rebuild -- \
       switch --flake ~/.dotfiles#mac
+    run_optional "Tailscale setup" "$DIR/install-tailscale.sh"
     # If this fails with "nix: command not found", open a new terminal
     # (Determinate adds nix to new shells' PATH) and re-run ./bootstrap.sh.
     ;;
@@ -41,8 +51,8 @@ case "$(uname -s)" in
     nix run github:nix-community/home-manager/release-26.05 -- \
       switch --impure --flake ~/.dotfiles#"$attr" -b hm-backup
     echo "==> Step 4: Tailscale (install + join tailnet, then expose dev ports)"
-    "$DIR/install-tailscale.sh"
-    "$DIR/expose-ports.sh"
+    run_optional "Tailscale setup" "$DIR/install-tailscale.sh"
+    run_optional "Tailscale port exposure" "$DIR/expose-ports.sh"
     echo "==> To make zsh the login shell (home-manager can't do this):"
     echo "    command -v zsh | sudo tee -a /etc/shells && chsh -s \"\$(command -v zsh)\""
     ;;
@@ -54,7 +64,7 @@ esac
 
 # codex and rust are installed outside Nix (see install-codex.sh / install-rust.sh);
 # do it here so a fresh machine has them immediately without a first ./rebuild.sh.
-"$DIR/install-codex.sh"
-"$DIR/install-rust.sh"
+run_optional "Codex setup" "$DIR/install-codex.sh"
+run_optional "Rust setup" "$DIR/install-rust.sh"
 
 echo "==> Done. Use ./rebuild.sh for future changes."

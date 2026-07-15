@@ -31,6 +31,10 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
+            # Writable tools such as Codex may atomically replace their managed
+            # symlink with a regular file. Keep the newest live file as the
+            # backup on every activation instead of failing on a stale backup.
+            home-manager.overwriteBackup = true;
             home-manager.extraSpecialArgs = { inherit user inputs; };
             home-manager.users.${user} = import ./home.nix;
           }

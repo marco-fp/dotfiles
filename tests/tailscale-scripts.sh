@@ -31,6 +31,8 @@ new_case() {
   MOCK_LOG="$CASE_DIR/commands.log"
   OUTPUT="$CASE_DIR/output.log"
   MOCK_INSTALLED_TAILSCALE=""
+  TAILSCALE_APP_PATH="$CASE_DIR/Tailscale.app"
+  TAILSCALE_USER_APP_PATH="$CASE_DIR/UserTailscale.app"
   mkdir -p "$MOCK_BIN"
   : >"$MOCK_LOG"
 
@@ -105,6 +107,8 @@ run_mocked() {
     MOCK_SSH_ALLOWED="${MOCK_SSH_ALLOWED:-0}" \
     MOCK_FAIL_SSH_ALLOW="${MOCK_FAIL_SSH_ALLOW:-0}" \
     MOCK_UNAME="${MOCK_UNAME:-Linux}" \
+    TAILSCALE_APP_PATH="$TAILSCALE_APP_PATH" \
+    TAILSCALE_USER_APP_PATH="$TAILSCALE_USER_APP_PATH" \
     bash "$ROOT/$script" >"$OUTPUT" 2>&1
 }
 
@@ -230,11 +234,33 @@ test_expose_skips_when_tailscale_is_down() {
   assert_contains "$OUTPUT" "tailscale is not up"
 }
 
-test_both_scripts_are_noops_off_linux() {
+test_install_macos_existing_app_is_noop() {
   new_case
+  rm "$MOCK_BIN/tailscale"
+  mkdir -p "$TAILSCALE_APP_PATH"
   MOCK_UNAME=Darwin run_mocked install-tailscale.sh
-  [ ! -s "$MOCK_LOG" ] || fail "install script ran commands on Darwin"
 
+  assert_contains "$OUTPUT" "tailscale already installed, skipping setup"
+  [ ! -s "$MOCK_LOG" ] || fail "existing macOS Tailscale installation was modified"
+}
+
+test_install_macos_missing_app_uses_homebrew() {
+  new_case
+  rm "$MOCK_BIN/tailscale"
+  cat >"$MOCK_BIN/brew" <<'EOF'
+#!/usr/bin/env bash
+printf 'brew' >>"$MOCK_LOG"
+printf ' %q' "$@" >>"$MOCK_LOG"
+printf '\n' >>"$MOCK_LOG"
+EOF
+  chmod +x "$MOCK_BIN/brew"
+
+  MOCK_UNAME=Darwin run_mocked install-tailscale.sh
+
+  assert_contains "$MOCK_LOG" "brew install --cask tailscale-app"
+}
+
+test_expose_is_noop_off_linux() {
   new_case
   MOCK_UNAME=Darwin run_mocked expose-ports.sh
   [ ! -s "$MOCK_LOG" ] || fail "expose script ran commands on Darwin"
@@ -248,6 +274,8 @@ test_expose_preserves_existing_openssh_profile
 test_expose_does_not_activate_inactive_ufw
 test_expose_abandons_firewall_if_ssh_cannot_be_allowed
 test_expose_skips_when_tailscale_is_down
-test_both_scripts_are_noops_off_linux
+test_install_macos_existing_app_is_noop
+test_install_macos_missing_app_uses_homebrew
+test_expose_is_noop_off_linux
 
 echo "PASS: tailscale script tests"

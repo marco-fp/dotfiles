@@ -1,11 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Linux gets the Tailscale daemon and CLI from the official stable installer.
-# macOS uses the Homebrew GUI cask declared in configuration.nix instead.
-if [ "$(uname -s)" != "Linux" ]; then
-  exit 0
-fi
+# Linux gets the daemon and CLI from the official stable installer. macOS
+# keeps an existing App Store/manual installation, or installs the GUI cask
+# only when neither the CLI nor app bundle is present.
+case "$(uname -s)" in
+  Darwin)
+    system_app="${TAILSCALE_APP_PATH:-/Applications/Tailscale.app}"
+    user_app="${TAILSCALE_USER_APP_PATH:-$HOME/Applications/Tailscale.app}"
+
+    if command -v tailscale >/dev/null 2>&1 \
+      || [ -d "$system_app" ] \
+      || [ -d "$user_app" ]; then
+      echo "==> tailscale already installed, skipping setup"
+      exit 0
+    fi
+
+    if ! command -v brew >/dev/null 2>&1; then
+      echo "WARNING: Homebrew is unavailable; cannot install Tailscale, continuing" >&2
+      exit 0
+    fi
+
+    echo "==> Installing tailscale-app (Homebrew cask)"
+    brew install --cask tailscale-app \
+      || echo "WARNING: tailscale-app install failed, continuing" >&2
+    exit 0
+    ;;
+  Linux)
+    ;;
+  *)
+    exit 0
+    ;;
+esac
 
 is_running() {
   tailscale status --json 2>/dev/null \

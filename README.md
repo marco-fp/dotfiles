@@ -135,21 +135,24 @@ Conventions:
   SSH. Windows and splits start in the active pane's directory.
 - claude-code comes from the homebrew cask on Mac (self-updates) and from
   nixpkgs on Linux (pinned; `lib.optionals pkgs.stdenv.isLinux`).
-- codex is **not** managed by Nix: it ships several releases/week, faster than
-  any Nix channel tracks. `install-codex.sh` runs the official installer
-  (`curl -fsSL https://chatgpt.com/codex/install.sh | sh`) into `~/.local/bin`
-  on both platforms; `bootstrap.sh` and `rebuild.sh` invoke it, so every switch
-  installs or updates codex to the latest release. `~/.local/bin` is on PATH via
-  `home.sessionPath`. codex rewrites its own `config.toml` with machine-specific
+- codex is **not** managed by Nix: macOS uses the Homebrew cask, while Linux
+  installs the standalone release into `~/.local/bin`. `install-codex.sh` asks
+  Homebrew whether its cask is outdated; for standalone installs, it compares
+  the installed version with the official latest GitHub release before running
+  `codex update`. It installs only when codex is absent and never reinstalls an
+  unchanged version. codex rewrites its own `config.toml` with machine-specific
   `[projects.*]` trust entries; leave those uncommitted.
 - rust is **not** managed by Nix either: `install-rust.sh` runs rustup
   (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`) with
   `--no-modify-path` into `~/.cargo/bin` (on PATH via `home.sessionPath`).
-  bootstrap/rebuild install it when absent and run `rustup update` otherwise, so
-  the toolchain self-manages the same way it does outside Nix.
-- Tailscale is installed on macOS through the `tailscale-app` Homebrew cask and
-  on Linux through `install-tailscale.sh`. Linux bootstrap/rebuild also runs
-  `expose-ports.sh`; macOS never exposes the development port range.
+  bootstrap/rebuild install it when absent and run `rustup update` otherwise;
+  rustup only downloads toolchains whose channel version changed.
+- `install-tailscale.sh` leaves an existing macOS CLI or app bundle untouched
+  and otherwise installs the `tailscale-app` Homebrew cask. On Linux it uses
+  the official stable installer. Linux bootstrap/rebuild also runs
+  `expose-ports.sh`; macOS never exposes the development port range. Tailscale,
+  port exposure, Codex, and Rust are independent optional steps, so one failing
+  does not prevent the remaining installers from running.
 - herdr comes from its own flake input on both platforms.
 
 ## Troubleshooting
