@@ -30,6 +30,7 @@ new_case() {
   MOCK_BIN="$CASE_DIR/bin"
   MOCK_LOG="$CASE_DIR/commands.log"
   OUTPUT="$CASE_DIR/output.log"
+  MOCK_INSTALLED_TAILSCALE=""
   mkdir -p "$MOCK_BIN"
   : >"$MOCK_LOG"
 
@@ -96,6 +97,8 @@ run_mocked() {
   local script="$1"
   env \
     PATH="${MOCK_PATH:-$MOCK_BIN:/usr/bin:/bin}" \
+    MOCK_BIN="$MOCK_BIN" \
+    MOCK_INSTALLED_TAILSCALE="${MOCK_INSTALLED_TAILSCALE:-}" \
     MOCK_LOG="$MOCK_LOG" \
     MOCK_TS_RUNNING="${MOCK_TS_RUNNING:-1}" \
     MOCK_UFW_ACTIVE="${MOCK_UFW_ACTIVE:-1}" \
@@ -113,8 +116,8 @@ test_install_failure_is_nonfatal() {
 exit 22
 EOF
   chmod +x "$MOCK_BIN/curl"
-  ln -s /usr/bin/bash "$MOCK_BIN/bash"
-  ln -s /usr/bin/sh "$MOCK_BIN/sh"
+  ln -s /bin/bash "$MOCK_BIN/bash"
+  ln -s /bin/sh "$MOCK_BIN/sh"
 
   MOCK_PATH="$MOCK_BIN" run_mocked install-tailscale.sh
 
@@ -122,18 +125,35 @@ EOF
   assert_not_contains "$MOCK_LOG" "sudo "
 }
 
-test_install_running_enforces_safe_preferences() {
+test_install_existing_is_noop() {
   new_case
-  run_mocked install-tailscale.sh
+  cat >"$MOCK_BIN/curl" <<'EOF'
+#!/usr/bin/env bash
+printf 'curl\n' >>"$MOCK_LOG"
+exit 99
+EOF
+  chmod +x "$MOCK_BIN/curl"
 
-  assert_not_contains "$MOCK_LOG" "tailscale up"
-  assert_contains "$MOCK_LOG" "sudo tailscale set --accept-routes=false --advertise-exit-node=false --advertise-routes= --exit-node= --ssh=false"
+  MOCK_TS_RUNNING=0 run_mocked install-tailscale.sh
+
+  assert_contains "$OUTPUT" "tailscale already installed, skipping setup"
+  [ ! -s "$MOCK_LOG" ] || fail "existing Tailscale installation was modified"
 }
 
 test_install_login_uses_safe_flags() {
   new_case
+  MOCK_INSTALLED_TAILSCALE="$CASE_DIR/installed-tailscale"
+  mv "$MOCK_BIN/tailscale" "$MOCK_INSTALLED_TAILSCALE"
+  cat >"$MOCK_BIN/curl" <<'EOF'
+#!/usr/bin/env bash
+cp "$MOCK_INSTALLED_TAILSCALE" "$MOCK_BIN/tailscale"
+printf ':\n'
+EOF
+  chmod +x "$MOCK_BIN/curl"
+
   MOCK_TS_RUNNING=0 run_mocked install-tailscale.sh
 
+  assert_contains "$OUTPUT" "Installing tailscale"
   assert_contains "$MOCK_LOG" "sudo tailscale up --accept-routes=false --ssh=false"
   assert_contains "$MOCK_LOG" "sudo tailscale set --accept-routes=false --advertise-exit-node=false --advertise-routes= --exit-node= --ssh=false"
 }
@@ -220,7 +240,7 @@ test_both_scripts_are_noops_off_linux() {
   [ ! -s "$MOCK_LOG" ] || fail "expose script ran commands on Darwin"
 }
 
-test_install_running_enforces_safe_preferences
+test_install_existing_is_noop
 test_install_login_uses_safe_flags
 test_install_failure_is_nonfatal
 test_expose_configures_exact_range_and_safe_firewall

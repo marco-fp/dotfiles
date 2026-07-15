@@ -71,7 +71,8 @@ flake.nix               inputs + machine configs; username set once here
         │                              ~/.config/opencode/AGENTS.md
         ├── .claude/settings.json   -> ~/.claude/settings.json
         ├── .codex/config.toml      -> ~/.codex/config.toml
-        └── .config/{nvim,wezterm,herdr}/ -> ~/.config/...
+        ├── .config/{nvim,wezterm,herdr}/ -> ~/.config/...
+        └── .config/tmux/tmux-theme.sh  -> packaged by home.nix
 ```
 
 Two different mechanisms are in play:
@@ -100,6 +101,7 @@ Nix flakes only see **git-tracked files**. If a build fails with
 | Add a CLI tool everywhere | Add to `home.packages` in `home.nix` | yes |
 | Add a Mac GUI app | Add cask to `homebrew.casks` in `configuration.nix` | yes |
 | Add a shell alias | `programs.zsh.shellAliases` in `home.nix` | yes |
+| Change tmux behavior | `programs.tmux` in `home.nix` | yes |
 | Change nvim/wezterm/herdr config | Edit files under `home/.config/` | no |
 | Change agent guidance (all CLIs) | Edit `home/AGENTS.md` | no |
 | Change Claude Code settings | Edit `home/.claude/settings.json` | no |
@@ -119,11 +121,18 @@ Conventions:
 - GUI-only bits (wezterm config, patched fonts) install only where a GUI
   exists: Mac always, Linux never unless you switch with `GUI=1` (e.g.
   `GUI=1 ./rebuild.sh`). Gated by `gui` in `home.nix`.
-- WezTerm and Neovim share a persistent theme selection. `Cmd+Shift+T` cycles
-  both in sync; `theme next|prev|set|list` works from the shell, and Neovim has
-  `:ThemeNext`, `:ThemePrev`, and `:Theme <name>`. The font is JetBrains Mono
-  (Nerd Font patched), configured in `home/.config/wezterm/wezterm.lua` and
-  `nerd-fonts.jetbrains-mono` in `home.nix`.
+- WezTerm, Neovim, and tmux share a persistent theme selection.
+  `Cmd+Shift+T` cycles all three in sync; `theme next|prev|set|list` works from
+  the shell, and Neovim has `:ThemeNext`, `:ThemePrev`, and `:Theme <name>`.
+  The font is JetBrains Mono (Nerd Font patched), configured in
+  `home/.config/wezterm/wezterm.lua` and `nerd-fonts.jetbrains-mono` in
+  `home.nix`.
+- tmux uses the standard `Ctrl-b` prefix. Run `t` to create or reattach the
+  persistent `main` session. Prefix + `h/j/k/l` moves between panes, uppercase
+  `H/J/K/L` resizes them, `r` reloads the config, and `[` enters vi copy mode
+  (`v` selects and `y` copies). Mouse selection and `y` use OSC 52, so copied
+  text reaches the local WezTerm clipboard even when tmux runs on a VPS over
+  SSH. Windows and splits start in the active pane's directory.
 - claude-code comes from the homebrew cask on Mac (self-updates) and from
   nixpkgs on Linux (pinned; `lib.optionals pkgs.stdenv.isLinux`).
 - codex is **not** managed by Nix: it ships several releases/week, faster than

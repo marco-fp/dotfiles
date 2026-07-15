@@ -51,7 +51,8 @@ local function current_color_scheme()
 
 	for line in file:lines() do
 		if line ~= "" and line:sub(1, 1) ~= "#" then
-			local id, _, scheme = line:match("^([^|]+)|([^|]+)|([^|]+)|([^|]+)$")
+			local id, _, scheme =
+				line:match("^([^|]+)|([^|]+)|([^|]+)|[^|]+|[^|]+|[^|]+|[^|]+|[^|]+$")
 			if id == selected then
 				file:close()
 				return scheme

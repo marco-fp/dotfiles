@@ -9,11 +9,20 @@ let
   # GUI=1 (e.g. `GUI=1 ./rebuild.sh`). isDarwin short-circuits the `||`, so the
   # getEnv is never read on Mac and that build stays pure.
   gui = pkgs.stdenv.isDarwin || builtins.getEnv "GUI" == "1";
+  tmuxTheme = pkgs.writeShellApplication {
+    name = "tmux-theme";
+    runtimeInputs = [
+      pkgs.gawk
+      pkgs.tmux
+    ];
+    text = builtins.readFile ./home/.config/tmux/tmux-theme.sh;
+  };
   themeSwitcher = pkgs.writeShellApplication {
     name = "theme";
     runtimeInputs = [
       pkgs.coreutils
       pkgs.gawk
+      tmuxTheme
     ];
     text = ''
       catalog="''${THEME_CATALOG:-''${XDG_CONFIG_HOME:-"$HOME/.config"}/nvim/theme-switcher/themes}"
@@ -67,6 +76,7 @@ let
         # Keep the same inode so long-running Neovim file watchers continue to
         # receive every change.
         printf '%s\n' "$selected" > "$state_file"
+        tmux-theme "$selected"
         show_theme "$selected"
       }
 
@@ -199,7 +209,56 @@ in
       m = "git switch main";
       cc = "claude --dangerously-skip-permissions";
       co = "codex";
+      t = "tmux new-session -A -s main";
     };
+  };
+
+  programs.tmux = {
+    enable = true;
+    baseIndex = 1;
+    clock24 = true;
+    customPaneNavigationAndResize = true;
+    escapeTime = 0;
+    focusEvents = true;
+    historyLimit = 100000;
+    keyMode = "vi";
+    mouse = true;
+    resizeAmount = 5;
+    shell = "${pkgs.zsh}/bin/zsh";
+    terminal = "tmux-256color";
+    extraConfig = ''
+      # Keep numbering compact as windows close and preserve the current working
+      # directory when creating another window or pane.
+      set -g renumber-windows on
+      bind-key c new-window -c "#{pane_current_path}"
+      bind-key '"' split-window -v -c "#{pane_current_path}"
+      bind-key % split-window -h -c "#{pane_current_path}"
+
+      # WezTerm supports true colour and OSC 52 clipboard writes. The
+      # tmux-256color entry also covers SSH from one tmux session into another.
+      set -as terminal-features ',xterm-256color:RGB:clipboard'
+      set -as terminal-features ',tmux-256color:RGB:clipboard'
+      set -as terminal-features ',wezterm:RGB:clipboard'
+      set -g set-clipboard on
+
+      set -g status-position bottom
+      set -g status-interval 5
+      set -g status-left-length 40
+      set -g status-right-length 80
+      set -g window-status-separator ""
+      set -g status-keys vi
+
+      bind-key -T copy-mode-vi v send-keys -X begin-selection
+      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+      bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-selection-and-cancel
+
+      bind-key r source-file ~/.config/tmux/tmux.conf \; display-message "tmux configuration reloaded"
+
+      # Apply the palette selected by the shared theme command to every newly
+      # created server. Later theme changes update the running server directly.
+      run-shell -b '${tmuxTheme}/bin/tmux-theme'
+    '';
   };
 
   programs.git = {

@@ -6,9 +6,11 @@ THEME_BIN=${1:-theme}
 CATALOG="$ROOT/home/.config/nvim/theme-switcher/themes"
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
+mkdir -p "$TMP/tmux"
 
 run_theme() {
-  THEME_CATALOG="$CATALOG" THEME_STATE_FILE="$TMP/current" "$THEME_BIN" "$@"
+  TMUX_TMPDIR="$TMP/tmux" THEME_CATALOG="$CATALOG" \
+    THEME_STATE_FILE="$TMP/current" "$THEME_BIN" "$@"
 }
 
 assert_equal() {

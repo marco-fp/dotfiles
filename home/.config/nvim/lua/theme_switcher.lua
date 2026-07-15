@@ -17,7 +17,8 @@ local function load_catalog()
 
 	for line in file:lines() do
 		if line ~= "" and line:sub(1, 1) ~= "#" then
-			local id, label, wezterm, neovim = line:match("^([^|]+)|([^|]+)|([^|]+)|([^|]+)$")
+			local id, label, wezterm, neovim =
+				line:match("^([^|]+)|([^|]+)|([^|]+)|([^|]+)|[^|]+|[^|]+|[^|]+|[^|]+$")
 			if not id then
 				file:close()
 				error(("invalid theme catalog entry: %s"):format(line))

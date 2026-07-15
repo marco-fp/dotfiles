@@ -13,13 +13,14 @@ is_running() {
 }
 
 if command -v tailscale >/dev/null 2>&1; then
-  echo "==> tailscale already installed, skipping install"
-else
-  echo "==> Installing tailscale (official installer, latest stable)"
-  if ! curl -fsSL https://tailscale.com/install.sh | sh; then
-    echo "WARNING: tailscale install failed (offline?), continuing" >&2
-    exit 0
-  fi
+  echo "==> tailscale already installed, skipping setup"
+  exit 0
+fi
+
+echo "==> Installing tailscale (official installer, latest stable)"
+if ! curl -fsSL https://tailscale.com/install.sh | sh; then
+  echo "WARNING: tailscale install failed (offline?), continuing" >&2
+  exit 0
 fi
 
 if ! command -v tailscale >/dev/null 2>&1; then

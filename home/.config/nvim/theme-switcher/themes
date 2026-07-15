@@ -1,7 +1,7 @@
-# id|label|wezterm color scheme|neovim color scheme
-nord|Nord|Nord (Gogh)|nord
-tokyonight|Tokyo Night Moon|Tokyo Night Moon|tokyonight-moon
-catppuccin|Catppuccin Macchiato|Catppuccin Macchiato|catppuccin-macchiato
-gruvbox|Gruvbox Dark Hard|GruvboxDarkHard|gruvbox
-kanagawa|Kanagawa Wave|Kanagawa (Gogh)|kanagawa
-rose-pine|Rosé Pine Moon|rose-pine-moon|rose-pine
+# id|label|wezterm scheme|neovim scheme|tmux background|tmux foreground|tmux muted|tmux accent
+nord|Nord|Nord (Gogh)|nord|#2E3440|#D8DEE9|#4C566A|#88C0D0
+tokyonight|Tokyo Night Moon|Tokyo Night Moon|tokyonight-moon|#222436|#C8D3F5|#636DA6|#82AAFF
+catppuccin|Catppuccin Macchiato|Catppuccin Macchiato|catppuccin-macchiato|#24273A|#CAD3F5|#5B6078|#8AADF4
+gruvbox|Gruvbox Dark Hard|GruvboxDarkHard|gruvbox|#1D2021|#EBDBB2|#665C54|#D79921
+kanagawa|Kanagawa Wave|Kanagawa (Gogh)|kanagawa|#1F1F28|#DCD7BA|#54546D|#7E9CD8
+rose-pine|Rosé Pine Moon|rose-pine-moon|rose-pine|#232136|#E0DEF4|#6E6A86|#C4A7E7
