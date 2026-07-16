@@ -142,6 +142,11 @@ Conventions:
   `codex update`. It installs only when codex is absent and never reinstalls an
   unchanged version. codex rewrites its own `config.toml` with machine-specific
   `[projects.*]` trust entries; leave those uncommitted.
+- GSD Core is installed for Claude Code and Codex with `./install-gsd.sh`.
+  The upstream GSD installer rejects a symlinked `~/.codex/config.toml`, so
+  the wrapper temporarily materializes that file, runs the official `npx`
+  installer, syncs the generated config back into `home/.codex/config.toml`,
+  and restores the Home Manager symlink. Re-run the wrapper to update GSD.
 - rust is **not** managed by Nix either: `install-rust.sh` runs rustup
   (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`) with
   `--no-modify-path` into `~/.cargo/bin` (on PATH via `home.sessionPath`).

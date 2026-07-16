@@ -154,8 +154,11 @@ cp "$MOCK_INSTALLED_TAILSCALE" "$MOCK_BIN/tailscale"
 printf ':\n'
 EOF
   chmod +x "$MOCK_BIN/curl"
+  for command_name in bash sh cp grep; do
+    ln -s "$(command -v "$command_name")" "$MOCK_BIN/$command_name"
+  done
 
-  MOCK_TS_RUNNING=0 run_mocked install-tailscale.sh
+  MOCK_PATH="$MOCK_BIN" MOCK_TS_RUNNING=0 run_mocked install-tailscale.sh
 
   assert_contains "$OUTPUT" "Installing tailscale"
   assert_contains "$MOCK_LOG" "sudo tailscale up --accept-routes=false --ssh=false"
@@ -238,7 +241,8 @@ test_install_macos_existing_app_is_noop() {
   new_case
   rm "$MOCK_BIN/tailscale"
   mkdir -p "$TAILSCALE_APP_PATH"
-  MOCK_UNAME=Darwin run_mocked install-tailscale.sh
+  ln -s "$(command -v bash)" "$MOCK_BIN/bash"
+  MOCK_PATH="$MOCK_BIN" MOCK_UNAME=Darwin run_mocked install-tailscale.sh
 
   assert_contains "$OUTPUT" "tailscale already installed, skipping setup"
   [ ! -s "$MOCK_LOG" ] || fail "existing macOS Tailscale installation was modified"
@@ -254,8 +258,9 @@ printf ' %q' "$@" >>"$MOCK_LOG"
 printf '\n' >>"$MOCK_LOG"
 EOF
   chmod +x "$MOCK_BIN/brew"
+  ln -s "$(command -v bash)" "$MOCK_BIN/bash"
 
-  MOCK_UNAME=Darwin run_mocked install-tailscale.sh
+  MOCK_PATH="$MOCK_BIN" MOCK_UNAME=Darwin run_mocked install-tailscale.sh
 
   assert_contains "$MOCK_LOG" "brew install --cask tailscale-app"
 }
