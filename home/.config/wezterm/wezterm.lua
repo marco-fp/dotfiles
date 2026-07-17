@@ -103,6 +103,13 @@ config.keys = {
 			window:set_config_overrides(overrides)
 		end),
 	},
+	{
+		-- Recover terminal modes if an SSH connection dies before a remote TUI
+		-- can disable mouse reporting. This resets and clears the active pane.
+		key = "r",
+		mods = "SUPER|SHIFT",
+		action = wezterm.action.ResetTerminal,
+	},
 }
 
 return config

@@ -213,6 +213,29 @@ in
     };
   };
 
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    # OrbStack requires its generated include to precede every Host block.
+    includes = lib.optionals pkgs.stdenv.isDarwin [ "~/.orbstack/ssh/config" ];
+    settings = {
+      # Protocol-level keepalives prevent idle firewalls and NAT mappings from
+      # silently dropping long-running remote tmux and Herdr clients.
+      "*" = {
+        ServerAliveInterval = 15;
+        ServerAliveCountMax = 4;
+      };
+    } // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      # Preserve the existing macOS SSH identity and Keychain integration when
+      # Home Manager takes ownership of ~/.ssh/config.
+      "github.com" = {
+        AddKeysToAgent = true;
+        UseKeychain = true;
+        IdentityFile = "~/.ssh/id_ed25519";
+      };
+    };
+  };
+
   programs.tmux = {
     enable = true;
     baseIndex = 1;
