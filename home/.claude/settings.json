@@ -1,8 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "bash $HOME/.dotfiles/home/.claude/statusline.sh"
-  },
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_LSP_TOOL": "1"
@@ -11,12 +7,7 @@
   "permissions": {
     "allow": [
       "Bash(git grep:*)",
-      "Bash(cargo check:*)",
-      "Bash(npx gsd-core *)",
-      "Read(.planning/*)",
-      "Write(.planning/*)",
-      "Read(STATE.md)",
-      "Write(STATE.md)"
+      "Bash(cargo check:*)"
     ],
     "deny": [
       "Read(.env)",
@@ -25,6 +16,10 @@
     ]
   },
   "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash $HOME/.dotfiles/home/.claude/statusline.sh"
+  },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
@@ -38,163 +33,9 @@
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-ansi",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-check-update.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"/home/mfernandezpranno/.claude/hooks/gsd-session-state.sh\""
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-context-monitor.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-read-injection-scanner.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"/home/mfernandezpranno/.claude/hooks/gsd-graphify-update.sh\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"/home/mfernandezpranno/.claude/hooks/gsd-phase-boundary.sh\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-prompt-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-read-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-workflow-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-worktree-path-guard.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"/home/mfernandezpranno/.claude/hooks/gsd-validate-commit.sh\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-context-monitor.js\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-context-monitor.js\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-context-monitor.js\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "FileChanged": [
-      {
-        "matcher": "config.json",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/mfernandezpranno/.local/lib/nodejs/node-v24.18.0-linux-x64/bin/node\" \"/home/mfernandezpranno/.claude/hooks/gsd-config-reload.js\"",
-            "timeout": 8
-          }
-        ]
-      }
-    ]
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
   }
 }
